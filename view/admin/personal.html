@@ -1,0 +1,247 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+
+<div class="content">
+    <div class="user_info">
+        <h1 class="myh">基本资料</h1>
+        <div class="info_box">
+            <div class="basic_data">
+                <div class="load_imgbox">
+                    <div class="load_img">
+                        <div class="headimg">
+                            <img src="/{{data.avatar}}" name="pic_show" width="100" height="100" id="pic_show" />
+                        </div>
+                        <form  method="post" enctype="multipart/form-data" id="myForm" style="display: none;">
+                            <button class="loadpic">上传图片</button>
+                            <input type="file" name="photo" id="photo" onchange="previewImage(this,'pic_show')"/>
+                        </form>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <!--更改信息-->
+                <div id="form_commit" style="display: none;">
+                    <ul>
+                        <li>
+                            <span>用户名：</span>
+                            <span class="user_name">{{data.uname}}<input type="hidden" name="uname" value="{{data.uname}}" /></span>
+                        </li>
+                        <li>
+                            <span>真实姓名：</span>
+                            <input type="text" name="realname" class="realname" value="{{data.realname}}" onblur="checkrealname(this,'mydivname')" />
+                            <div id="mydivname" style="right:312px;">请输入您的真实姓名</div>
+                        </li>
+                        <li>
+                            <span style="float: left">性别：</span>
+                            <p>
+                                <label>
+                                    <input name="sex" type="radio" value="男" checked="checked">男
+                                </label>
+                                <label>
+                                    <input name="sex" type="radio" value="女">女
+                                </label>
+                            </p>
+                        </li>
+                        <li>
+                            <span>身份证号：</span>
+                            <input type="text" name="idcard" class="idcard" value="{{data.idcard}}" onblur="checkid(this,'mydivid')"/>
+                            <div id="mydivid" style="right:269px;">请输入正确有效的证件号码</div>
+                        </li>
+                        <li>
+                            <span>邮箱：</span>
+                            <input type="text" name="email" class="email" value="{{data.email}}" onblur="checkmail(this,'mydivmail')"/>
+                            <div id="mydivmail" style="right:298px;">请输入正确的邮箱账号</div>
+                        </li>
+                        <li>
+                            <span>所在地：</span>
+                            <select id="selProvince">
+                                <option value="0">--请选择省份--</option>
+                            </select>
+                            <select id="selCity">
+                                <option value="0">--请选择城市--</option>
+                            </select>
+                            <select id="selDistrict">
+                                <option value="0">--请选择区/县--</option>
+                            </select>
+                        </li>
+                        <div class="clear"></div>
+                    </ul>
+                    <div class="save_btn" style="margin-top: 10px;float: right; margin-right: 100px;">
+                        <a href="javascript:;">保存</a>
+                    </div>
+                </div>
+
+                <!--显示信息-->
+                <div id="alter_show">
+                    <ul>
+                        <li>
+                            <span>用户名：</span>
+                            <span class="user_name">{{data.uname}}</span>
+                        </li>
+                        <li>
+                            <span>真实姓名：</span>
+                            <span>{{data.realname}}</span>
+                        </li>
+                        <li>
+                            <span style="float: left">性别：</span>
+                            <span>{{data.sex}}</span>
+                        </li>
+                        <li>
+                            <span>身份证号：</span>
+                            <span>{{data.idcard}}</span>
+                        </li>
+                        <li>
+                            <span>邮箱：</span>
+                            <span>{{data.email}}</span>
+                        </li>
+                        <li>
+                            <span>所在地：</span>
+                            <span>{{data.local}}</span>
+                        </li>
+                        <div class="clear"></div>
+                    </ul>
+                    <div class="alter_btn" style="margin-top: 20px;float: right; margin-right: 100px;">
+                        <a href="javascript:void(0)">编辑资料</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        //省市区三级联
+        $.each(provinceJson, function(k, p) {
+            var option = "<option value='" + p.id + "'>" + p.province + "</option>";
+            $("#selProvince").append(option);
+        });
+        $("#selProvince").change(function() {
+            var selValue = $(this).val();
+            $("#selCity option:gt(0)").remove();
+            $.each(cityJson, function(k, p) {
+                // 直辖市处理.|| p.parent == selValue，直辖市为当前自己
+                if (p.id == selValue || p.parent == selValue) {
+                    var option = "<option value='" + p.id + "'>" + p.city + "</option>";
+                    $("#selCity").append(option);
+                }
+            });
+        });
+        $("#selCity").change(function() {
+            var selValue = $(this).val();
+            $("#selDistrict option:gt(0)").remove();
+            $.each(countyJson, function(k, p) {
+                if (p.parent == selValue) {
+                    var option = "<option value='" + p.id + "'>" + p.county + "</option>";
+                    $("#selDistrict").append(option);
+                }
+            });
+        });
+
+        //点击修改用户信息
+        $(".alter_btn").on("click",function () {
+            $("#form_commit").css("display","block");
+            $("#alter_show").css("display","none");
+            $("#myForm").css("display","block");
+           /* var span = $("#alter_show ul li span:last-child");
+            for( var i = 0; i < span.length; i ++  ){
+                console.log(span[i].innerHTML);
+            }*/
+        });
+
+        //保存用户修改的信息
+        $(".save_btn").on("click",function () {
+            var realname=$("#form_commit").find("[name='realname']").val();
+            var sex = $("#form_commit").find("[name='sex']:checked").val();
+            var idcard=$("#form_commit").find("[name='idcard']").val();
+            var email=$("#form_commit").find("[name='email']").val();
+            var local=$("#form_commit").find("option:selected").text();
+            var uname=$("#form_commit").find("[name='uname']").val();
+
+            if( $("#mydivname").css("display") === "none" && $("#mydivmail").css("display") === "none" && $("#mydivid").css("display") === "none" &&
+                $("#selProvince").val() !== "0" && $("#selCity").val() !== "0" && $("#selDistrict").val() !== "0"
+            ){
+                //使用ajax上传文件
+                $.ajaxFileUpload({
+                    url:"/admin/saveInfo",              //请求的地址
+                    data:{
+                        uname:uname,
+                        realname:realname,
+                        sex:sex,
+                        email:email,
+                        idcard:idcard,
+                        local:local
+                    },      //传参
+                    fileElementId:"photo",         //需要上传的图片域的id
+                    dataType:"json",                 //后台返回的数据类型
+                    success:function (data) {            //成功的时候回调的函数
+                        if(data.code===0){
+                            //失败
+                            //console.log(data.message);
+                            alert("网络连接失败，请稍后再试");
+                        }else if(data.code===1){
+                            //更改用户信息成功
+                            location.reload();
+//                        console.log(data);
+                        }
+                    },
+                    error:function (e) {              //失败的时候回调的函数
+                        console.log(e);
+                    }
+                });
+            } else if ( $("#selProvince").val() === "0" || $("#selCity").val() === "0" || $("#selDistrict").val() === "0" ){
+                alert("请输入完整地址");
+            }else {
+                alert("请检查您输入的信息是否准确无误");
+            }
+        });
+    });
+
+    //显示头像选择的图片
+        function previewImage(file,id){
+        var pic=$("#"+id);
+        //        pic.attr("src","");   //每次更改图片都先把内容设为空，再去设置内容，不然会看到页面一闪一闪的更改图片
+
+        //预览图片，FileReader()读取本地图片文件并显示
+        var reader=new FileReader();
+        //文件读取成功完成时触发
+        reader.onload=function (evt) {
+            pic.attr("src",evt.target.result);
+        };
+        reader.readAsDataURL(file.files[0]);
+    }
+
+    //验证用户真实姓名
+    function checkrealname(obj,divid){
+        var reg=/^[\u4e00-\u9fa5\a-zA-Z][\u4e00-\u9fa5\a-zA-Z]{1,18}$/;
+        if(!reg.test(obj.value)){
+            $("#"+divid+"").css("display","block");
+        }else{
+            $("#"+divid+"").css("display","none");
+        }
+    }
+
+
+    //验证身份证号码
+    function checkid(obj,divid){
+        var reg= /^\d{17}[\d|x]$|^\d{15}$/;
+        if(!reg.test(obj.value)){
+            $("#"+divid+"").css("display","block");
+        }else{
+            $("#"+divid+"").css("display","none");
+        }
+    }
+
+    //验证邮箱
+    function checkmail(obj,divid){
+        var reg=/\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/;
+        if(!reg.test(obj.value)){
+            $("#"+divid+"").css("display","block");
+        }else{
+            $("#"+divid+"").css("display","none");
+        }
+    }
+</script>
+
+{% endblock %}

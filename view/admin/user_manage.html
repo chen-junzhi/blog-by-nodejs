@@ -1,0 +1,80 @@
+{% extends 'layout.html' %}
+{% block main %}
+
+<div class="content" id="admin_content">
+    <h1 class="myh">用户列表</h1>
+    <div class="task_box" style="margin-right:10px;">
+        <div class="tab_box">
+            <div>
+                <table width="100%" border="1" cellspacing="0" cellpadding="0" class="member_table" id="list1">
+                    <tbody>
+                    <tr>
+                        <th align="center">ID</th>
+                        <th align="center">用户名</th>
+                        <th align="center">真实名字</th>
+                        <th align="center">性别</th>
+                        <th align="center">所在地</th>
+                        <th align="center">是否是管理员</th>
+                    </tr>
+                    {% for user in allUser %}
+                    <tr style="height:30px;">
+                        <td align="center">{{user.uid}}</td>
+                        <td align="center">{{user.uname}}</td>
+                        <td align="center">{{user.realname}}</td>
+                        <td align="center">{{user.sex}}</td>
+                        <td align="center">{{user.local}}</td>
+                        <td align="center">{% if user.isAdmin %}是{% else %}否{%endif%}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% include 'page.html' %}
+</div>
+
+<!-- 限制上下页，页面中有分页功能应该加上这端代码 -->
+<script>
+    (function () {
+        /*var height = $('#pager').offset().top - $('#mynav').height() - $('section').outerHeight(true) - 30;
+        $(window).scrollTop(height);*/
+        limitA();
+        function limitA() {
+            var href = location.href;
+            href += '?pageNo=1';
+            var pageNo = href.substring(href.indexOf('pageNo')+7,href.indexOf('pageNo')+8);
+            var pages = $('#pager .s_n').html();
+            if( pages == 1 ){
+                $('#pager ul.page li:first').css('background','#a1a5a9');
+                $('#pager ul.page li:last').css('background','#a1a5a9');
+                $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+            }else if( pageNo == 1 ){
+                $('#pager ul.page li:first').css('background','#a1a5a9');
+                $('#pager ul.page li:last').css('background','#1569c5');
+                $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+            }else if ( pageNo == pages ) {
+                $('#pager ul.page li:first').css('background','#1569c5');
+                $('#pager ul.page li:last').css('background','#a1a5a9');
+                $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+            }else {
+                $('#pager ul.page li:first').css('background','#1569c5');
+                $('#pager ul.page li:last').css('background','#1569c5');
+                $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+            }
+        }
+    })()
+</script>
+{%endblock%}

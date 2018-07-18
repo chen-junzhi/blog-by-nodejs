@@ -1,0 +1,244 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<!-- 内容区开始 -->
+<script>
+    //后退刷新，但这样会刷新两次
+   /*  if(window.name !== "bencalie"){
+       location.reload();
+       window.name = "bencalie";
+   }else{
+       window.name = "";
+   }*/
+</script>
+<div id="container" class="clear-after">
+    <!-- 文章部分开始 -->
+    <article>
+        <!-- 1、首页照片展示 -->
+        <div class="mb25 index_ban borderRadius boxShadow">
+            <a href="/" target="_blank">
+                <img src="../../public/images/ban.jpg" class="borderRadius imgB">
+                <img src="../../public/images/ban.jpg" class="borderRadius imgT">
+            </a>
+            <ul class="texts">
+                <p>我们不停的翻弄着回忆</p>
+                <p>却再也找不回那时的自己</p>
+                <p>红尘一梦，不再追寻</p>
+                <p>By - 陈俊志</p>
+            </ul>
+        </div>
+        <!-- 2、置顶项 -->
+        <div class="article-top bgOpacity borderRadius boxShadow mb30">
+            <div class="article-top-wrap  pd20">
+                {% for item in topItem %}
+                <h2 class="article-top-title"><a href="/article_detail?id=0&category={{ item.category_title }}&article_Id={{ item.article_id }}" title="{{ item.article_title }}">{{ item.article_title }}</a></h2>
+                <div class="article-top-con">{% autoescape %} {{item.article_content}} {% endautoescape %}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 3、章节部分开始 -->
+        <section>
+            <ul>
+                {% for article in allArticle %}
+                <li class="article-item mb25 borderRadius">
+                    <div class="clear-after pd20">
+                        <div class="article-img left"><img src="{{ article.img }}" class="borderRadius"></div>
+                        <div class="article-con right">
+                            <a href="/article_detail?id=0&category={{ article.category_class }}&article_Id={{ article.article_id }}">
+                                <h2 class="sec-title">{{ article.article_title }}</h2>
+                                <p class="sec-con">{% autoescape %} {{article.article_content}} {% endautoescape %}</p>
+                            </a>
+                            <ul>
+                                <li class="art-con-item left">
+                                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span><i class="time">{{ article.article_date }}</i>
+                                </li>
+                                <li class="art-con-item left">
+                                    <a href="javascript:;"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><i class="author">{{ article.uname }}</i></a>
+                                </li>
+                                <li class="art-con-item left">
+                                    <a href="javascript:;"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span><i class="comment">{{ article.review_num }}</i></a>
+                                </li>
+                                <li class="art-con-item left">
+                                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span><i class="view">{{ article.article_acessNum  }}</i>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% include 'page.html' %}
+        <!-- 章节部分结束 -->
+    </article>
+    <!-- 文章部分结束 -->
+
+
+    <!-- 旁边部分开始 -->
+    <aside>
+		<!-- 三张二维码 -->
+		<div class='ewm'>
+			<img src='../../public/images/ewm_wechat.png' />
+			<img src='../../public/images/ewm_qq.jpg' />
+			<img src='../../public/images/ewm_wb.png' />
+		</div>
+		
+        <!-- 乐于交友 -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-heart mr5"></span><span style="font-weight: bold;font-size: 16px;">乐于交友</span>
+            </div>
+            <ul class="clear-after contact">
+                <li class="wechat left"><a href="javascript:;"><img src="../../public/images/mm.png"></a><p>微信</p></li>
+                <li class="QQ left"><a href="javascript:;"><img src="../../public/images/qq.png"></a><p>QQ</p></li>
+                <li class="sina left "><a href="javascript:;"><img src="../../public/images/sinaweibo.png"></a><p>新浪微博</p></li>
+            </ul>
+            <div class="navbar-form clear-after" style="width: 80%; margin: 0 auto;">
+                <input type="text" class="form-control" name="" placeholder="请输入搜索内容" >
+                <button class="btn btn-success" style="padding: 6px 1px;">搜索</button>
+            </div>
+        </div>
+
+        <!-- 笔记之类的导航 （glyphicon glyphicon-pencil  笔记     glyphicon glyphicon-tags  教程  glyphicon glyphicon-link  资源） 背景图滑动效果 a标签hover效果-->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-pencil mr5"></span><span style="font-weight: bold;font-size: 16px;">笔记导航</span>
+            </div>
+            <div class="pd15">
+                <ul class="note-nav">
+                    <!-- 分别从文章、随笔、资源分享、学海无涯选出一篇最新发表的文章 -->
+                    {% for note in noteNav %}
+                    <li><a href="/article_detail?id=0&article_Id={{ note.article_id }}">{{ note.article_title }}</a></li>
+                    {% endfor %}
+                    <div style="clear:both;"></div>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-hand-right mr5"></span><span style="font-weight: bold;font-size: 16px;">热门推荐<sup style="color: red; margin-left: 2px;">Hot</sup></span>
+            </div>
+            <div class="pd15">
+                <ul class="l-s">
+                    {% for recommend in hotRecommend %}
+                    <li><span>·</span><a href="/article_detail?id=0&article_Id={{ recommend.article_id }}">{{ recommend.article_title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 点击排行 -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-sort-by-attributes-alt mr5"></span><span style="font-weight: bold;font-size: 16px;">点击排行</span>
+            </div>
+            <div class="pd15">
+                <ul class="download-rank" id="article_rank">
+                    {% for article_ran in article_rank %}
+                    <li><span>1</span><a href="/article_detail?id=0&category={{ article_ran.category_title }}&article_Id={{ article_ran.article_id }}" title="{{ article_ran.article_title }}">{{ article_ran.article_title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 最新评论(自动往上翻) -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-comment mr5"></span><span style="font-weight: bold;font-size: 16px;">最新评论</span>
+            </div>
+            <div class="pd15 c-new">
+                <ul>
+                    {% for comment in allComment %}
+                    <li class="c-items">
+                        <div class="c-title">《<a href="/article_detail?id=0&category={{ comment.category_title }}&article_Id={{ comment.article_id }}">{{ comment.article_title }}</a>》</div>
+                        <div class="c-content">{{ comment.review_content }}</div>
+                        <div class="c-people">----By {{ comment.uname }}</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 友情链接（glyphicon glyphicon-paperclip） -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-paperclip mr5"></span><span style="font-weight: bold;font-size: 16px;">友情链接</span>
+            </div>
+            <div class="pd15">
+                <ul class="f-link">
+                    <li><a href="http://www.baidu.com">百度</a></li>
+                    <li><a href="http://www.talklee.com">李洋</a></li>
+                    <li><a href="http://www.duanliang920.com/">段亮</a></li>
+                    <li><a href="http://www.zuoxiaolong.com">左晓龙</a></li>
+                    <li><a href="http://www.mlwei.com">小伟</a></li>
+                    <li><a href="http://www.xwblog.net">魏义齐</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 广告栏招租 -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-apple mr5"></span><span style="font-weight: bold;font-size: 16px;">广告栏招租</span>
+            </div>
+            <div class="ad-hire">
+                <div class="hire">
+                    <a href="http://www.suning.com">
+                        <img src="../../public/images/adImg.jpg" title="苏宁易购" alt="" class="adImg">
+                        <img src="../../public/images/ad.png" class="ad">
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+    <!-- 旁边部分结束 -->
+    <!-- 限制上下页，页面中有分页功能应该加上这端代码 -->
+    <script>
+        (function () {
+            /*var height = $('#pager').offset().top - $('#mynav').height() - $('section').outerHeight(true) - 30;
+            $(window).scrollTop(height);*/
+            limitA();
+            function limitA() {
+                var href = location.href;
+                href += '?pageNo=1';
+                var pageNo = href.substring(href.indexOf('pageNo')+7,href.indexOf('pageNo')+8);
+                var pages = $('#pager .s_n').html();
+                if( pages == 1 ){
+                    $('#pager ul.page li:first').css('background','#a1a5a9');
+                    $('#pager ul.page li:last').css('background','#a1a5a9');
+                    $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                    $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                    $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                    $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+                }else if( pageNo == 1 ){
+                    $('#pager ul.page li:first').css('background','#a1a5a9');
+                    $('#pager ul.page li:last').css('background','#1569c5');
+                    $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                    $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                    $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                    $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+                }else if ( pageNo == pages ) {
+                    $('#pager ul.page li:first').css('background','#1569c5');
+                    $('#pager ul.page li:last').css('background','#a1a5a9');
+                    $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                    $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                    $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                    $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+                }else {
+                    $('#pager ul.page li:first').css('background','#1569c5');
+                    $('#pager ul.page li:last').css('background','#1569c5');
+                    $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                    $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                    $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                    $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+                }
+            }
+        })()
+    </script>
+</div>
+<!-- 内容区结束 -->
+{% endblock %}

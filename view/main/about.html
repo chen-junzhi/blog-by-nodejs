@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+<!-- 内容区开始 -->
+<div id="container" class="clear-after">
+
+    <article>
+        <div class="person-info bgOpacity clear-after boxShadow borderRadius mb25">
+            <div class="person-img"><img src="../../public/images/person.jpg" /></div>
+            <div class="person-msg">
+                <ul>
+                    <li>姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名：<span>陈俊志</span></li>
+                    <li>Q&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Q：1120705580</li>
+                    <li>微&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;信：13207343359</li>
+                    <li>职&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业：前端工程师</li>
+                    <li>业余爱好：唱歌、打篮球、玩游戏</li>
+                    <li>人生格言：梦想还是要有的，就算做咸鱼，也要做最咸的那条</li>
+                    <li>星&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;座：摩羯座</li>
+                    <li>斗鱼直播：<a href="https://www.douyu.com/room/share/3717879?"><img src="../../public/images/dy.png" width="40" height="40" title="进入他的斗鱼直播间" alt="斗鱼直播" /></a></li>
+                    <li><span style="color: #0086e3;">擅长</span>PS、Webstorm、Phpstorm、VS、Tomcat、VM、WinSCP、DW等软件的安装与卸载；<br/>
+                        <span style="color: #0086e3;">精通</span>C、C＋＋、C#、java、Ruby、Perl、Lisp、python、Objective-C、ActionScript、CSS、JavaScript、PHP等单词的拼写； <br/>
+                        <span style="color: #0086e3;">熟悉</span>windows、Linux、Mac、Android、IOS等系统的开关机；</li>
+                </ul>
+            </div>
+            <div class="person-comprehend">
+                <p class="text"></p>
+                <p class="text">方向不对，跑得再快也没用。</p>
+                <p class="text">个人理解：不管学习什么东西，一定要有属于自己的“学习方法”和善于“对事物的总结”。个人理解：不管学习什么东西，一定要有属于自己的“学习方法”和善于“对事物的总结”。</p>
+                <p class="text">方向不对，跑得再快也没用。</p>
+                <img src="../../public/images/name1.png" width="180" height="80">
+            </div>
+        </div>
+    </article>
+
+    <!-- 旁边部分开始 -->
+    <aside>
+		<!-- 三张二维码 -->
+		<div class='ewm'>
+			<img src='../../public/images/ewm_wechat.png' />
+			<img src='../../public/images/ewm_qq.jpg' />
+			<img src='../../public/images/ewm_wb.png' />
+		</div>
+        <!-- 乐于交友 -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-heart mr5"></span><span style="font-weight: bold;font-size: 16px;">乐于交友</span>
+            </div>
+            <ul class="clear-after contact">
+                <li class="wechat left"><a href="javascript:;"><img src="../../public/images/mm.png"></a><p>微信</p></li>
+                <li class="QQ left"><a href="javascript:;"><img src="../../public/images/qq.png"></a><p>QQ</p></li>
+                <li class="sina left "><a href="javascript:;"><img src="../../public/images/sinaweibo.png"></a><p>新浪微博</p></li>
+            </ul>
+            <div class="navbar-form clear-after" style="width: 80%; margin: 0 auto;">
+                <input type="text" class="form-control" name="" placeholder="请输入搜索内容">
+                <button class="btn btn-success" style="padding: 6px 1px;">搜索</button>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-hand-right mr5"></span><span style="font-weight: bold;font-size: 16px;">热门推荐<sup style="color: red; margin-left: 2px;">Hot</sup></span>
+            </div>
+            <div class="pd15">
+                <ul class="l-s">
+                    {% for recommend in hotRecommend %}
+                    <li><span>·</span><a href="/article_detail?id=0&article_Id={{ recommend.article_id }}">{{ recommend.article_title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 友情链接（glyphicon glyphicon-paperclip） -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-paperclip mr5"></span><span style="font-weight: bold;font-size: 16px;">友情链接</span>
+            </div>
+            <div class="pd15">
+                <ul class="f-link">
+                    <li><a href="http://www.baidu.com">百度</a></li>
+                    <li><a href="http://www.talklee.com">李洋</a></li>
+                    <li><a href="http://www.duanliang920.com/">段亮</a></li>
+                    <li><a href="http://www.zuoxiaolong.com">左晓龙</a></li>
+                    <li><a href="http://www.mlwei.com">小伟</a></li>
+                    <li><a href="http://www.xwblog.net">魏义齐</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+    </aside>
+    <!-- 旁边部分结束 -->
+</div>
+
+
+<!-- 内容区结束 -->
+{% endblock %}

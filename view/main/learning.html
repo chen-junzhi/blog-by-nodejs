@@ -1,0 +1,147 @@
+{% extends "layout.html" %}
+
+{% block main %}
+
+<div id="container" class="clear-after">
+
+    <article>
+        <!-- 章节部分开始 -->
+        <section>
+            <ul>
+                {% for article in allArticle %}
+                <li class="article-item mb25 borderRadius">
+                    <div class="clear-after pd20">
+                        <div class="article-img left"><img src="{{ article.img }}" class="borderRadius"></div>
+                        <div class="article-con right">
+                            <!--   哪个分类下面 ； id = 0 代表首页，以此类推 article_Id代表文章id  -->
+                            <a href="/article_detail?id=0&category={{ article.category_title }}&article_Id={{ article.article_id }}">
+                                <h2 class="sec-title">{{ article.article_title }}</h2>
+                                <p class="sec-con">{% autoescape %} {{article.article_content}} {% endautoescape %}</p>
+                            </a>
+                            <ul>
+                                <li class="art-con-item left">
+                                    <span class="glyphicon glyphicon-time" aria-hidden="true"></span><i class="time">{{ article.article_date }}</i>
+                                </li>
+                                <li class="art-con-item left">
+                                    <a href="javascript:;"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><i class="author">{{ article.uname }}</i></a>
+                                </li>
+                                <li class="art-con-item left">
+                                    <a href="javascript:;"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span><i class="comment">{{ article.review_num }}</i></a>
+                                </li>
+                                <li class="art-con-item left">
+                                    <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span><i class="view">{{ article.article_acessNum  }}</i>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% include 'page.html' %}
+    </article>
+
+    <!-- 旁边部分开始 -->
+    <aside>
+        <!-- 三张二维码 -->
+        <div class='ewm'>
+            <img src='../../public/images/ewm_wechat.png' />
+            <img src='../../public/images/ewm_qq.jpg' />
+            <img src='../../public/images/ewm_wb.png' />
+        </div>
+        <!-- 乐于交友 -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-heart mr5"></span><span style="font-weight: bold;font-size: 16px;">乐于交友</span>
+            </div>
+            <ul class="clear-after contact">
+                <li class="wechat left"><a href="javascript:;"><img src="../../public/images/mm.png"></a><p>微信</p></li>
+                <li class="QQ left"><a href="javascript:;"><img src="../../public/images/qq.png"></a><p>QQ</p></li>
+                <li class="sina left "><a href="javascript:;"><img src="../../public/images/sinaweibo.png"></a><p>新浪微博</p></li>
+            </ul>
+            <div class="navbar-form clear-after" style="width: 80%; margin: 0 auto;">
+                <input type="text" class="form-control" name="" placeholder="请输入搜索内容">
+                <button class="btn btn-success" style="padding: 6px 1px;">搜索</button>
+            </div>
+        </div>
+
+        <!-- 笔记之类的导航 （glyphicon glyphicon-pencil  笔记     glyphicon glyphicon-tags  教程  glyphicon glyphicon-link  资源） 背景图滑动效果 a标签hover效果-->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-pencil mr5"></span><span style="font-weight: bold;font-size: 16px;">笔记导航</span>
+            </div>
+            <div class="pd15">
+                <ul class="note-nav">
+                    <!-- 分别从文章、随笔、资源分享、学海无涯选出一篇最新发表的文章 -->
+                    {% for note in noteNav %}
+                    <li><a href="/article_detail?id=0&article_Id={{ note.article_id }}">{{ note.article_title }}</a></li>
+                    {% endfor %}
+                    <div style="clear:both;"></div>
+                </ul>
+            </div>
+        </div>
+
+        <!-- 热门推荐 -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-hand-right mr5"></span><span style="font-weight: bold;font-size: 16px;">热门推荐<sup style="color: red; margin-left: 2px;">Hot</sup></span>
+            </div>
+            <div class="pd15">
+                <ul class="l-s">
+                    {% for recommend in hotRecommend %}
+                    <li><span>·</span><a href="/article_detail?id=0&article_Id={{ recommend.article_id }}">{{ recommend.article_title }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </aside>
+    <!-- 旁边部分结束 -->
+</div>
+
+<!-- 限制上下页，页面中有分页功能应该加上这端代码 -->
+<script>
+    (function () {
+        var height = $('#pager').offset().top - $('#mynav').height() - $('section').outerHeight(true) - 30;
+        $(window).scrollTop(height);
+        limitA();
+        function limitA() {
+            var href = location.href;
+            href += '?pageNo=1';
+            var pageNo = href.substring(href.indexOf('pageNo')+7,href.indexOf('pageNo')+8);
+            var pages = $('#pager .s_n').html();
+            if( pages == 1 ){
+                $('#pager ul.page li:first').css('background','#a1a5a9');
+                $('#pager ul.page li:last').css('background','#a1a5a9');
+                $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+            }else if( pageNo == 1 ){
+                $('#pager ul.page li:first').css('background','#a1a5a9');
+                $('#pager ul.page li:last').css('background','#1569c5');
+                $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+            }else if ( pageNo == pages ) {
+                $('#pager ul.page li:first').css('background','#1569c5');
+                $('#pager ul.page li:last').css('background','#a1a5a9');
+                $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+            }else {
+                $('#pager ul.page li:first').css('background','#1569c5');
+                $('#pager ul.page li:last').css('background','#1569c5');
+                $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+            }
+        }
+    })()
+</script>
+
+
+{% endblock %}

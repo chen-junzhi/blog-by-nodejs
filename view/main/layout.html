@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <title>陈俊志个人博客 - 一个聊音乐与技术的论坛</title>
+    <link rel="stylesheet" type="text/css" href="../../public/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/index.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/about.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/article_detail.css">
+    <link rel="icon" href="../../public/images/icon.png">
+
+    <script type="text/javascript" src="../../public/js/jquery-v1.10.2.js"></script>
+    <script type="text/javascript" src="../../public/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../public/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../public/js/index.js"></script>
+	<script type='text/javascript' src='../../public/js/canvas-nest.min.js'></script>
+    <script type="text/javascript" src="../../public/js/verify.js"></script>
+</head>
+<body>
+<!-- 头部开始 -->
+<header id="myheader">
+    <nav class="nav navbar-default navbar-fixed-top" id="mynav">
+        <div class="container-fluid top">
+            <div id="logo">
+                <a href="/?id=0">
+                    <img src="../../public/images/logo.jpg">
+                </a>
+            </div>
+            <div class="navbar-header">
+                <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav nav">
+                    <li><a href="/?id=0">首页</a></li>
+                    <li><a href="about?id=1">关于我</a></li>
+                    <li><a href="article?id=2">文章</a></li>
+                    <li><a href="essay?id=3">随笔</a></li>
+                    <li><a href="resource-sharing?id=4">资源分享</a></li>
+                    <li><a href="learning?id=5">学海无涯</a></li>
+                    <li><a href="message?id=6">留言</a></li>
+
+                </ul>
+                <ul style="float: right;" class="userInfo">
+                    {% if userInfo._id %}
+                    <span class="glyphicon glyphicon-user"><a href="/admin/personal?uname={{userInfo.uname}}" style="margin-left: 5px; color: #0181da; font-size: 16px;">{{ userInfo.uname }}</a></span>
+                    {% if userInfo.isAdmin %}
+                    <span style="margin-top: 2px;">您好，管理员</span>
+                    {% endif %}
+                    <li class="exit"><a href="javascript:void(0);" onclick="Exit()" style="font-size: 14px;">退出</a></li>
+                    {% else %}
+                    <li><a href="javascript:;" id="login">登录</a></li>
+                    <li><a href="javascript:;" id="register">注册</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<!-- 头部结束 -->
+
+<div class="wrap">
+    <!--登录-->
+    <div id="loginBox">
+        <button class="login_close" onclick="loginClose()">
+            <img src="../../public/images/close.png" />
+        </button>
+        <div>
+            <h1>登录<span>还没有帐号?<a href="javascript:void(0)" onclick="reg()">立即注册</a></span></h1>
+            <div class="login_content">
+                <h4 style="font-weight:normal;">手机号</h4>
+                <span id="login_user">
+					   <input type="text" name="username" id="username" placeholder="请输入您的手机号" maxlength="11"/>
+				   </span>
+                <span id="login_pwd">
+					   <input type="password" name="password" id="userpwd" placeholder="请输入您的密码" maxlength="18"/>
+				   </span>
+                <span id="msg1"></span>
+                <span><button id="login_btn">登录</button></span>
+                <p>
+                    <label>
+                        <input type="checkbox" checked="checked" id="rememberUser" style="vertical-align:middle;" />
+                        记住账号
+                    </label>
+                    <a href="javascript:void(0)" style="float:right;">忘记密码?</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <!--注册-->
+    <div id="registerBox">
+        <button class="login_close" onclick="loginClose()">
+            <img src="../../public/images/close.png" />
+        </button>
+
+        <h1>注册<span>已经有帐号?<a href="javascript:void(0)" onclick="log()">马上登录</a></span></h1>
+        <div class="reg_content">
+            <h4 style="font-weight:normal;">请用手机号码注册</h4>
+            <span>
+                <input class="ipt" type="text" name="username" placeholder="手机号" maxlength="11" />
+            </span>
+            <div class="r_uname" style="display: none;">手机号输入有误！</div>
+            <span>
+                <input class="ipt" type="password" name="password" placeholder="密码" maxlength="18" />
+            </span>
+            <div class="r_pwd" style="display: none;">密码输入有误！</div>
+            <span>
+                <input class="ipt" type="password" name="repassword" placeholder="确认密码" maxlength="18" />
+            </span>
+            <div class="r_rpwd" style="display: none;">两次输入的密码不一致！</div>
+            <span>
+                <button style="background: deepskyblue;height: 36px;" id="show_mp">请点击按钮验证</button>
+            </span>
+            <div id="mpanel4" style="display: none;"></div>
+            <div id="yz_success" style="height: 30px; display: none;"><p style="font-size: 20px; color: #FFFFFF; line-height: 45px; text-align: center;">验证成功！</p></div>
+            <p>
+                <label>
+                    <input type="checkbox" checked="checked" id="checkedxy" style="vertical-align:middle; margin: 0;" />
+                    已经阅读并同意
+                    <a href="javascript:void(0)">《新创生注册协议》</a>
+                </label>
+            </p>
+            <span><button id="register_btn">注册</button></span>
+        </div>
+
+    </div>
+</div>
+<div id="loginMask"></div>
+
+<!-- 内容区开始 -->
+<div class="container-fluid">
+
+    <canvas id="c_n12" width="1600" height="530" style="position: fixed; top: 0px; left: 0px; z-index: -1; opacity: 1;"></canvas>
+    <code>
+	    <div id='circle' style='display:block;'></div>
+	    <div id='circle1' style='display:block;'></div>
+    </code>
+    <!-- 返回顶部 -->
+    <div class="toTop"><a href="javascript:;"></a></div>
+    <!--模板引擎的静态块-->
+    {%block main%}{%endblock%}
+</div>
+<!-- 内容区结束 -->
+
+<script>
+    $(function () {
+        var url = location.href;
+
+        var id = url.indexOf('id') + 3;     //‘获取到=号的索引’
+        var index = url.substring( id , id + 1 );   //获取=号后面的参数0,1,2...
+        //当我们在非主页的时候，在地址栏把参数id删除之后，就会有个小bug，找不到id就会进入到下面的if语句中，然后.active就只会给首页加上
+        if( url.indexOf('id') === -1){
+            index = 0;
+        }
+        var lis = $('#mynav ul.nav li');
+        lis.eq(index).addClass('active').siblings().removeClass('active');
+
+        //点击搜索后，页面刷新，保存搜索框的值
+        if( url.indexOf('val') !== -1 ){
+            var keyWord = url.substring(url.indexOf('val') + 4);
+            $('.form-control').val(decodeURI(keyWord));
+        }
+
+		
+		//让人感觉像是网页刷新的样子，哈哈，科技感
+		$("#circle").fadeOut(1000);      
+		$("#circle1").fadeOut(1200);
+
+		//验证滑块
+	    var flag1 = false;
+        var flag2 = false;
+        $('#mpanel4').slideVerify({
+            type : 2,		//类型
+            vOffset : 5,	//误差量，根据需求自行调整
+            vSpace : 5,	//间隔
+            imgName : ['../../public/images/1.jpg', '../../public/images/2.jpg'],
+            imgSize : {
+                width: '334px',
+                height: '215px'
+            },
+            blockSize : {
+                width: '40px',
+                height: '40px'
+            },
+            barSize : {
+                width : '334px',
+                height : '40px'
+            },
+            ready : function() {
+            },
+            success : function() {
+                $('#yz_success').fadeIn();
+                $('#yz_success').html('验证成功！');
+                $('#yz_success').css({
+                    'background': 'none',
+                    'color': '#0a77e8'
+                });
+                setTimeout(function () {
+                    $('#yz_success').fadeOut();
+                    $('#mpanel4').fadeOut();
+                    $('#show_mp').attr('disabled',true);
+                    $('#show_mp').css('background','#ccc');
+                },1000);
+                flag1 = true;
+                //......后续操作
+            },
+            error : function() {
+                //		        	alert('验证失败！');
+            }
+
+        });
+
+        $('#show_mp').click(function () {
+            $('#mpanel4').fadeIn();
+        });
+        $('#loginMask').click(function () {
+            $('#mpanel4').fadeOut();
+        });
+
+
+        //注册的验证
+        //手机号格式：1(345678)+9位数字； 密码格式：首字母开头的6~18位字母数字下划线组合
+
+        $("#registerBox .ipt").blur(function(){
+            var uname=$("#registerBox").find("[name='username']").val();
+            var pwd=$("#registerBox").find("[name='password']").val();
+            var repwd=$("#registerBox").find("[name='repassword']").val();
+            var r_uname = $('.r_uname');
+            var r_pwd = $('.r_pwd');
+            var r_rpwd = $('.r_rpwd');
+
+
+            var phoneNumber=/^1[345678]\d{9}$/;
+            var password =/^[a-zA-Z]\w{5,17}$/;
+            if(!phoneNumber.test(uname)){
+                //手机号码格式不正确，请重新输入！
+                r_uname.show();
+                r_uname.html("手机号码格式不正确，请检查输入！");
+                r_uname.css("color","#f00");
+                setTimeout(function(){
+                    r_uname.hide();
+                },3000);
+            } else if ( !password.test(pwd) ) {
+                r_pwd.show();
+                r_pwd.html("密码必须是首字母开头的6~18位字母数字下划线组合");
+                r_pwd.css("color","#f00");
+                setTimeout(function(){
+                    r_pwd.hide();
+                },3000);
+            }else if ( pwd!==repwd ) {
+                r_rpwd.show();
+                r_rpwd.html("两次输入的密码不一致，请重新输入！");
+                r_rpwd.css("color","#f00");
+                setTimeout(function(){
+                    r_rpwd.hide();
+                },3000);
+            } else  {
+                flag2 = true;
+            }
+        });
+
+        //注册
+        $("#register_btn").on("click",function () {
+            var uname=$("#registerBox").find("[name='username']").val();
+            var pwd=$("#registerBox").find("[name='password']").val();
+            var msg=$("#yz_success");
+
+            if( flag1 === false ){
+                msg.show();
+                msg.html("请检查您的滑块验证！");
+                msg.css({
+                    "color": "#f00",
+                    "background": "none"
+                });
+                setTimeout(function(){
+                    msg.hide();
+                },3000);
+            } else if ( flag2 === false ) {
+                msg.show();
+                msg.html("请检查您的用户名或者密码是否正确！");
+                msg.css({
+                    "color": "#f00",
+                    "background": "none"
+                });
+                setTimeout(function(){
+                    msg.hide();
+                },3000);
+            } else if(flag1 && flag2){
+                //可以注册了
+                $.ajax({
+                    type:"post",
+                    url:"/api/user/register",
+                    data:{
+                        uname:uname,
+                        pwd:pwd
+                    },
+                    dataType:"json",
+                    success:function (data) {
+                        msg.css('background','none');
+                        if(data.code!==2){
+                            msg.show();
+                            msg.html(data.msg);
+                            msg.css("color","#f00");
+                            setTimeout(function(){
+                                msg.hide();
+                            },3000);
+                        }else{
+                            //注册成功，显示登陆界面
+                            msg.show();
+                            msg.html(data.msg);
+                            msg.css("color","blue");
+                            setTimeout(function(){
+                                msg.hide();
+                                $("#registerBox").find("[name='username']").val("");
+                                $("#registerBox").find("[name='password']").val("");
+                                $("#registerBox").find("[name='repassword']").val("");
+                                log();
+                            },3000);
+                        }
+                    }
+                });
+            }
+        });
+
+        //登录
+        var loginBox=$("#loginBox");
+        $("#login_btn").on("click",function () {
+            var uname=loginBox.find("[name='username']").val();
+            var pwd=loginBox.find("[name='password']").val();
+            var msg1=$("#msg1");
+            if(uname === "" || uname === null || pwd === "" || pwd === null){
+                msg1.show();
+                msg1.html("手机号或者密码不能为空！");
+                msg1.css("color","#f00");
+                setTimeout(function(){
+                    msg1.hide();
+                },3000);
+            }else{
+                //通过ajax提交请求
+                $.ajax({
+                    type:"post",
+                    url:"/api/user/login",
+                    data:{
+                        uname:uname,
+                        pwd:pwd
+                    },
+                    dataType:"json",
+                    success:function (result) {
+                        msg1.show();
+                        msg1.html(result.msg);
+                        setTimeout(function(){
+                            msg1.hide();
+                        },3000);
+                        msg1.css("color","#f00");
+                        //console.log(result);
+                        if(result.code === 2){
+                            //登陆成功
+                            msg1.css("color","blue");
+                            //记住密码存cookie
+                            saveUserInfo();
+                            location.reload();
+                        }
+                    }
+                });
+            }
+        });
+
+        //添加keydown事件
+        $('#userpwd').keydown(function (event) {
+            if( event.keyCode === 13 ){
+                if( $('#loginBox').css('display') === 'block' ){
+                    $("#login_btn").click();
+                }else if ( $('#registerBox').css('display') === 'block' ){
+                    $("#register_btn").click();
+                }
+            }
+        });
+
+        //记住用户名和密码
+        //如果$.cookie("rememberUser")为true,（取cookie）即把cookie里存的userName，passWord的值赋给id是username,userpwd的input；
+        if ($.cookie("rememberUser")) {
+            $("#rememberUser").attr("checked", true);
+            $("#username").val($.cookie("userName"));
+            $("#userpwd").val($.cookie("passWord"));
+        }
+
+        function saveUserInfo() {
+            if ($("#rememberUser").prop("checked") === true) {
+                var userName = $("#username").val();
+                var passWord = $("#userpwd").val();
+                $.cookie("rememberUser", "true", {
+                    expires: 7
+                }); // 存储一个带7天期限的 cookie
+                $.cookie("userName", userName, {
+                    expires: 7
+                }); // 存储一个带7天期限的 cookie
+                $.cookie("passWord", passWord, {
+                    expires: 7
+                }); // 存储一个带7天期限的 cookie
+            } else {
+                $.cookie("rememberUser", "false", {
+                    expires: -1
+                }); // 删除 cookie
+                $.cookie("userName", '', {
+                    expires: -1
+                });
+                $.cookie("passWord", '', {
+                    expires: -1
+                });
+            }
+        }
+
+        //手机端的时候，失焦也让navbar-collapse collapsing这个div消失
+        $('.navbar-toggle').blur(function () {
+            $('.navbar-toggle').click();
+        });
+
+        //点击搜索，模糊查询
+        $('.btn-success').click(function () {
+            var val = $('.form-control').val();
+            if( val !== null || val !== '' ){
+                location.href='/search?id=0&val='+val+' ';
+            }else {
+                alert('搜索内容不能为空');
+            }
+        });
+        $('.form-control').keydown(function(e){
+            var val = $(".form-control").val();
+            if(e.keyCode === 13 && ( val !== null || val !== '' ) ){
+                location.href='/search?id=0&val='+val+' ';
+            }else if ( e.keyCode === 13 ) {
+                alert('搜索内容不能为空');
+            }
+        });
+
+    });
+
+</script>
+
+<!-- 尾部开始 -->
+<footer>
+    <div>Copyright&copy;2017-2018  陈俊志个人博客 版权所有 <a href="javascript:;">湘ICP备88888888号</a></div>
+</footer>
+<!-- 尾部结束 -->
+
+</body>
+</html>

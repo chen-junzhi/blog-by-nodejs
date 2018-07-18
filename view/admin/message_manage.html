@@ -1,0 +1,101 @@
+{% extends 'layout.html' %}
+{% block main %}
+
+<div class="content" id="article_manage">
+    <h1 class="myh">留言管理</h1>
+    <div class="task_box" style="margin-right: 10px;">
+        <div class="tab_box">
+            <div>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="member_table" id="message_table">
+                    <tbody>
+                    <tr>
+                        <th align="center">编号</th>
+                        <th align="center">内容</th>
+                        <th align="center">时间</th>
+                        <th align="center">用户</th>
+                        <th align="center">操作</th>
+                    </tr>
+                    {% for msg in message %}
+                    <tr>
+                        <td align="center">{{msg.message_id}}</td>
+                        <td align="center">{{msg.message_content}}</td>
+                        <td align="center">{{msg.message_datetime}}</td>
+                        <td align="center">{{msg.uname}}</td>
+                        <td align="center"><button class="delete_task" onclick="del('{{msg.message_id}}')">删除</button></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% include 'page.html' %}
+</div>
+
+<script>
+    //限制上下页面
+    (function () {
+        /*var height = $('#pager').offset().top - $('#mynav').height() - $('section').outerHeight(true) - 30;
+        $(window).scrollTop(height);*/
+        limitA();
+        function limitA() {
+            var href = location.href;
+            href += '?pageNo=1';
+            var pageNo = href.substring(href.indexOf('pageNo')+7,href.indexOf('pageNo')+8);
+            var pages = $('#pager .s_n').html();
+            if( pages == 1 ){
+                $('#pager ul.page li:first').css('background','#a1a5a9');
+                $('#pager ul.page li:last').css('background','#a1a5a9');
+                $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+            }else if( pageNo == 1 ){
+                $('#pager ul.page li:first').css('background','#a1a5a9');
+                $('#pager ul.page li:last').css('background','#1569c5');
+                $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+            }else if ( pageNo == pages ) {
+                $('#pager ul.page li:first').css('background','#1569c5');
+                $('#pager ul.page li:last').css('background','#a1a5a9');
+                $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+            }else {
+                $('#pager ul.page li:first').css('background','#1569c5');
+                $('#pager ul.page li:last').css('background','#1569c5');
+                $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+            }
+        }
+    })()
+
+    function del(num){
+        //删除数据库的数据
+        if(confirm("您确定要删除这条评论吗？")){
+            $.ajax({
+                type:"post",
+                url:"/admin/delMessage",
+                data:{
+                    num:num
+                },
+                dataType:"json",
+                success:function(data){
+                    if(data.code===1){
+                        alert("评论删除成功！");
+                        location.reload();
+                    }else{
+                        alert("网络连接失败，请稍后重试");
+                    }
+                }
+            });
+        }
+    }
+</script>
+
+{%endblock%}

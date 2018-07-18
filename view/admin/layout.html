@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+    <title>个人中心</title>
+    <link rel="stylesheet" type="text/css" href="../../public/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/index.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/about.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/article_detail.css">
+    <link rel="stylesheet" type="text/css" href="../../public/css/personal.css">
+    <link rel="icon" href="../../public/images/icon.png">
+
+    <script type="text/javascript" src="../../public/js/jquery-v1.10.2.js"></script>
+    <script type="text/javascript" src="../../public/js/ajaxfileupload.js"></script>
+    <script type="text/javascript" src="../../public/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="../../public/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../../public/js/index.js"></script>
+    <script type="text/javascript" src="../../public/js/china_area.js"></script>
+    <script type="text/javascript" src="../../public/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" src="../../public/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" src="../../public/ueditor/lang/zh-cn/zh-cn.js"> </script>
+</head>
+<body>
+<!-- 头部开始 -->
+<header id="myheader">
+    <nav class="nav navbar-default navbar-fixed-top" id="mynav">
+        <div class="container-fluid top">
+            <div id="logo">
+                <a href="/?id=0">
+                    <img src="../../public/images/logo.jpg">
+                </a>
+            </div>
+            <div class="navbar-header">
+                <button class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav nav">
+                    <li><a href="/?id=0">首页</a></li>
+                    <li><a href="/about?id=1">关于我</a></li>
+                    <li><a href="/article?id=2">文章</a></li>
+                    <li><a href="/essay?id=3">随笔</a></li>
+                    <li><a href="/resource-sharing?id=4">资源分享</a></li>
+                    <li><a href="/learning?id=5">学海无涯</a></li>
+                    <li><a href="/message?id=6">留言</a></li>
+
+                </ul>
+                <ul style="float: right;" class="userInfo">
+                    {% if userInfo._id %}
+                    <span class="glyphicon glyphicon-user"><a href="/admin/personal?uname={{userInfo.uname}}" style="margin-left: 5px; color: #0181da; font-size: 16px;">{{ userInfo.uname }}</a></span>
+                    {% if userInfo.isAdmin %}
+                    <span style="margin-top: 2px;">您好，管理员</span>
+                    {% endif %}
+                    <li class="exit"><a href="javascript:void(0);" onclick="Exit()" style="font-size: 14px;">退出</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<!-- 头部结束 -->
+
+<!-- 内容区开始 -->
+<div class="container-fluid">
+    <code>
+        <div id='circle' style='display:block;'></div>
+        <div id='circle1' style='display:block;'></div>
+    </code>
+    <div id="container">
+        <div class="bgOpacity clear-after" style="max-width: 1160px; min-width: 320px;">
+            <!--左边部分共用-->
+            <div class="sidebar">
+                <div class="user_avatar">
+                    <img src="/{{data.avatar}}" width="100" height="100" />
+                    <h4>{{userInfo.uname}}</h4>
+                </div>
+                <ul>
+                    <li class="user_data active"><a href="/admin/personal?num=0&uname={{userInfo.uname}}"><span class="glyphicon glyphicon-file"></span>基本资料</a></li>
+                    <li class="user_set"><a href="/admin/user_set?num=1&uname={{userInfo.uname}}"><span class="glyphicon glyphicon-edit"></span>更改密码</a></li>
+                    <li class="user_publish"><a href="/admin/ueditor?num=2&uname={{userInfo.uname}}"><span class="glyphicon glyphicon-upload"></span>发布文章</a></li>
+                    {% if userInfo.isAdmin %}
+                    <li class="mytak sidebar_active0"><a href="/admin/user_manage?num=3&uname={{userInfo.uname}}">用户管理</a></li>
+                    <li class="message_manage"><a href="/admin/message_manage?num=4&uname={{userInfo.uname}}">留言管理</a></li>
+                    <li class="mytak"><a href="/admin/article_manage?num=5&uname={{userInfo.uname}}">文章管理</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+            <!--模板引擎的静态块-->
+            {%block main%}{%endblock%}
+        </div>
+    </div>
+</div>
+<!-- 内容区结束 -->
+
+<!-- 尾部开始 -->
+<footer>
+    <div>Copyright&copy;2017-2018  陈俊志个人博客 版权所有 <a href="javascript:;">湘ICP备88888888号</a></div>
+</footer>
+<!-- 尾部结束 -->
+
+<script>
+    var url = location.href;
+
+    var id = url.indexOf('num') + 4;     //‘获取到=号的索引’
+    var index = url.substring( id , id + 1 );   //获取=号后面的参数0,1,2...
+    //当我们在非主页的时候，在地址栏把参数id删除之后，就会有个小bug，找不到id就会进入到下面的if语句中，然后.active就只会给首页加上
+    if( url.indexOf('num') === -1){
+        index = 0;
+    }
+    var lis = $('#container .sidebar ul li');
+    lis.eq(index).addClass('active').siblings().removeClass('active');
+
+    //让人感觉像是网页刷新的样子，哈哈，科技感
+    $("#circle").fadeOut(1000);
+    $("#circle1").fadeOut(1200);
+
+    $(function () {
+       if( $('.userInfo').html().trim() === '' ){
+           alert("您已退出，即将为您跳转首页");
+           location.href = '/';
+       }
+    });
+
+    $(".sidebar").height($("#container .bgOpacity").height());
+
+    $("#container .sidebar ul li").click(function () {
+        $("#container .sidebar ul li").removeClass('active');
+        $(this).addClass('active');
+    });
+</script>
+</body>
+</html>

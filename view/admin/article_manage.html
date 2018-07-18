@@ -1,0 +1,121 @@
+{% extends 'layout.html' %}
+{% block main %}
+
+<div class="content" id="article_manage">
+    <h1 class="myh">文章管理</h1>
+    <div class="task_box" style="margin-right: 10px;">
+        <div class="tab_box">
+            <div>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="member_table" id="list1">
+                    <tbody>
+                    <tr>
+                        <th align="center">编号</th>
+                        <th align="center">图片</th>
+                        <th align="center">类型</th>
+                        <th align="center">标题</th>
+                        <th align="center">发布时间</th>
+                        <th align="center">作者</th>
+                        <th align="center">访问量</th>
+                        <th align="center">操作</th>
+                    </tr>
+                    {% for article in allArticle %}
+                    <tr>
+                        <td align="center">{{article.article_id}}</td>
+                        <td align="center"><a href="/article_detail?id=0&category={{ article.category_class }}&article_Id={{ article.article_id }}"><img src="/{{article.img}}" width="80" height="80"></a></td>
+                        <td align="center">{{article.category_class}}</td>
+                        <td align="center">{{article.article_title}}</td>
+                        <td align="center">{{article.article_date}}</td>
+                        <td align="center">{{article.uname}}</td>
+                        <td align="center"><span class="colornone">{{article.article_acessNum}}</span></td>
+                        <td align="center"><button class="delete_task" onclick="del('{{article.article_id}}')">删除</button></td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% include 'page.html' %}
+</div>
+
+<script>
+    //限制上下页面
+    (function () {
+        /*var height = $('#pager').offset().top - $('#mynav').height() - $('section').outerHeight(true) - 30;
+        $(window).scrollTop(height);*/
+        limitA();
+        function limitA() {
+            var href = location.href;
+            href += '?pageNo=1';
+            var pageNo = href.substring(href.indexOf('pageNo')+7,href.indexOf('pageNo')+8);
+            var pages = $('#pager .s_n').html();
+            if( pages == 1 ){
+                $('#pager ul.page li:first').css('background','#a1a5a9');
+                $('#pager ul.page li:last').css('background','#a1a5a9');
+                $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+            }else if( pageNo == 1 ){
+                $('#pager ul.page li:first').css('background','#a1a5a9');
+                $('#pager ul.page li:last').css('background','#1569c5');
+                $('#pager .previous a:nth-child(1)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                $('#pager .previous a:nth-child(2)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+            }else if ( pageNo == pages ) {
+                $('#pager ul.page li:first').css('background','#1569c5');
+                $('#pager ul.page li:last').css('background','#a1a5a9');
+                $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'none';
+                $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'block';
+            }else {
+                $('#pager ul.page li:first').css('background','#1569c5');
+                $('#pager ul.page li:last').css('background','#1569c5');
+                $('#pager .previous a:nth-child(1)')[0].className = 'block';
+                $('#pager .next2 a:nth-child(1)')[0].className = 'block';
+                $('#pager .previous a:nth-child(2)')[0].className = 'none';
+                $('#pager .next2 a:nth-child(2)')[0].className = 'none';
+            }
+        }
+    })()
+
+    var lis=$(".tab_menu li");
+    lis.on("click",function(){  //返回被选元素的所有同胞元素
+        $(this).addClass("current").siblings().removeClass("current");
+    });
+    var number=$(".tab_box").find("tr").length-1;
+    $("#apply").html(number);
+    //console.log($(".tab_box").find("tr").length-1);
+
+    function del(num){
+        //console.log(td);
+        //console.log(td.parentNode.parentNode);
+        /*var tr=td.parentNode.parentNode;
+        if(confirm("您确定要删除这个任务吗？")){
+            tr.remove();
+        }*/
+        //删除数据库的数据
+        if(confirm("您确定要删除这篇文章吗？")){
+            $.ajax({
+                type:"post",
+                url:"/admin/delArticle",
+                data:{
+                    num:num
+                },
+                dataType:"json",
+                success:function(data){
+                    if(data.code===1){
+                        alert("文章删除成功！");
+                        location.reload();
+                    }else{
+                        alert("网络连接失败，请稍后重试");
+                    }
+                }
+            });
+        }
+    }
+</script>
+
+{%endblock%}

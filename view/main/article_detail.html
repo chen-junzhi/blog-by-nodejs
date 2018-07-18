@@ -1,0 +1,370 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<!-- 内容区开始 -->
+<div id="container" class="clear-after">
+    <!-- 文章部分开始 -->
+    <article>
+        {% for article in allArticle %}
+        <div class="bgOpacity borderRadius boxShadow mb20">
+            <div class="pd20">
+                <h2 class="article-top-title" style="text-align: center; color: #0181da;">{{article.article_title}}</h2>
+            </div>
+        </div>
+        <div class="bgOpacity borderRadius boxShadow mb30">
+            <div class="pd10">
+                <ul class="a-con">
+                    <li class="a-con-item left">
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span><i class="time">{{ article.article_date }}</i>
+                    </li>
+                    <li class="a-con-item left">
+                        <a href="/about?user_id={{article.user_id}}" title="本文作者：{{ article.uname  }}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><i class="author">{{ article.uname }}</i></a>
+                    </li>
+                    <li class="a-con-item left">
+                        <a title="转到评论" href="javascript:;"  id="toReview"><span class="glyphicon glyphicon-comment" aria-hidden="true"></span><i class="comment">{{ article.review_num }}</i></a>
+                    </li>
+                    <li class="a-con-item left">
+                        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span><i class="view">{{ article.article_acessNum }}</i>
+                    </li>
+                    <div class="clear-after"></div>
+                </ul>
+            </div>
+        </div>
+
+        <div class="bgOpacity borderRadius boxShadow mb30 pd20" id="art-con">
+           {% autoescape %} {{article.article_content}} {% endautoescape %}
+            <div class="clear-after"></div>
+        </div>
+        <script>
+
+            /*document.write()*/
+            //document.getElementById("art-con").innerHTML =  '<%= article.article_content %>';
+            /* console.log({{article.article_content}});*/
+
+        </script>
+
+
+        <div class="bgOpacity borderRadius boxShadow mb30">
+            <section id="comments">
+                <!--评论输出-->
+                <div class="comment-tab">
+                    <div class="come-comt">
+                        <i class="glyphicon glyphicon-comment"></i>评论列表 <span id="comment_count">（已有<span style="color:#E1171B">{{ article.review_num }}</span>条评论，共<span style="color:#E1171B">{{ article.article_acessNum }}</span>人参与）</span>
+                    </div>
+                </div>
+                {% if comments %}
+
+                {% for comment in comments %}
+                <div class="shadow-box msg noimg wow" id="{{comment.review_id}}">
+                <div class="msgimg">
+                    <img class="avatar" src="{{comment.avatar}}" alt="网友昵称：{{comment.uname}}" title="网友昵称：{{comment.uname}}">
+                </div>
+                <div class="msgtxt">
+                    <div class="msgname">
+                        <a href="javascript:;" rel="nofollow" target="_blank">{{comment.uname}}</a>
+                        <span class="LevelName aulevel6"> {% if comment.isAdmin %} 管理员{% else %}游客{% endif %}</span>
+                        <span>
+                            {{comment.review_datetime}}
+                            <a href="#reply" onclick="RevertComment(this,'{{comment.review_id}}')" class="comment-reply-link">回复</a>
+                        </span>
+                       <!-- <span class="WB-OS">
+                            <img src="" title="Firefox 58.0" alt="" width="auto" height="auto">
+                             <img src="" title="Windows 10 x64" alt="" width="auto" height="auto">
+                        </span>-->
+                    </div>
+                    <div class="msgarticle">
+                        {{comment.review_content}}
+                        <!--<div class="shadow-box msg noimg wow" id="cmt1391">
+                            <div class="msgimg">
+                                <img class="avatar" src="../../public/images/default.png" alt="网友昵称：陈俊志" title="网友昵称：陈俊志">
+                            </div>
+                            <div class="msgtxt">
+                                <div class="msgname">
+                                    <a href="/" rel="nofollow" target="_blank">陈俊志</a><span class="LevelName aulevel1">管理员</span><span>2018-04-21 20:32:04<a href="#reply" onclick="RevertComment('1391')" class="comment-reply-link">回复</a></span>
+                                    <span class="WB-OS">
+                                        <img src="" title="Sogou Explorer" alt="" width="auto" height="auto">
+                                        <img src="" title="Windows 7 x64" alt="" width="auto" height="auto">
+                                    </span>
+                                </div>
+                                <div class="msgarticle">
+                                    <a class="comment_at" href="#comment-1390">@{{comment.uname}}</a>22222222
+                                    <div class="shadow-box msg noimg wow" id="cmt1446">
+                                        <div class="msgimg">
+                                            <img class="avatar" src="../../public/images/default.png" alt="网友昵称：{{article.uname}}" title="网友昵称：{{article.uname}}">
+                                        </div>
+                                        <div class="msgtxt">
+                                            <div class="msgname">
+                                                <a href="/" rel="nofollow" target="_blank">{{comment.uname}}</a><span class="LevelName aulevel6">游客</span><span>2018-04-21 21:32:04<a href="#reply" onclick="RevertComment('1446')" class="comment-reply-link">回复</a></span>
+                                                <span class="WB-OS">
+                                                    <img src="" title="Firefox 58.0" alt="" width="auto" height="auto">
+                                                    <img src="" title="Windows 10 x64" alt="" width="auto" height="auto">
+                                                </span>
+                                            </div>
+                                            <div class="msgarticle">
+                                                <a class="comment_at" href="#comment-1391">@陈俊志</a>333333
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>-->
+                    </div>
+                </div>
+                <div class="comt-box cmt-display" style="display: none;">
+                    <div class="right" style="margin-bottom: 2px; color: #398E9F">您还可以输入<span class="word1">140</span>个字</div>
+                    <textarea placeholder="请遵守相关法律与法规，文明评论。O(∩_∩)O~~您可以使用快捷键Ctrl+Enter提交内容" name="txaArticle" id="txaArticle1" class="text input-block-level comt-area" cols="50" rows="4" tabindex="5" onkeydown="if(event.ctrlKey&amp;&amp;event.keyCode===13){document.getElementById('submit1').click();return false};"></textarea>
+                    <p><input name="sumbit" type="submit" tabindex="6" value="回复" onclick="return VerifyMessage1(this)" class="submit right" id="submit1"></p>
+                    <div style="color: #e20a0a; display: none; font-size: 14px;" class="msg_danger">回复内容不能为空！</div>
+                    <div class="clear-after"></div>
+                </div>
+            </div>
+                <!--评论输出结束-->
+                {% endfor %}
+                <!--评论翻页条输出-->
+                <!--{% include 'page.html' %}-->
+                <!--评论输出结束-->
+
+                {% endif %}
+                <!--评论框-->
+                <div class="commentpost wow" id="comment">
+                    <h4><i class="glyphicon glyphicon-pencil"></i>发表评论<span class="jubao"><a rel="nofollow" href="http://www.12377.cn/" target="_blank"><small><i class="glyphicon glyphicon-warning-sign"></i>中国互联网举报中心</small></a></span></h4>
+                    <div id="frmSumbit">
+                        <div class="comt-box">
+                            <div class="right" style="margin-bottom: 2px; color: #398E9F">您还可以输入<span id="word">140</span>个字</div>
+                            <textarea placeholder="请遵守相关法律与法规，文明评论。O(∩_∩)O~~您可以使用快捷键Ctrl+Enter提交内容" name="txaArticle" id="txaArticle" class="text input-block-level comt-area" cols="50" rows="4" tabindex="5" onkeydown="if(event.ctrlKey&amp;&amp;event.keyCode==13){document.getElementById('submit').click();return false};"></textarea>
+                            <p><input name="sumbit" type="submit" tabindex="6" value="评论" onclick="return VerifyMessage()" class="submit right" id="submit"></p>
+                            <div style="color: #e20a0a; display: none; font-size: 14px;" class="msg_danger">评论内容不能为空！</div>
+                            <div class="clear-after"></div>
+                        </div>
+                    </div>
+                </div>
+                <!--评论框结束-->
+                <span class="icon icon_comment" title="comment"></span>
+            </section>
+        </div>
+        {% endfor %}
+    </article>
+    <!-- 文章部分结束 -->
+
+
+    <!-- 旁边部分开始 -->
+    <aside>
+        <!-- 三张二维码 -->
+        <div class='ewm'>
+            <img src='../../public/images/ewm_wechat.png' />
+            <img src='../../public/images/ewm_qq.jpg' />
+            <img src='../../public/images/ewm_wb.png' />
+        </div>
+
+        <!-- 乐于交友 -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-heart mr5"></span><span style="font-weight: bold;font-size: 16px;">乐于交友</span>
+            </div>
+            <ul class="clear-after contact">
+                <li class="wechat left"><a href="javascript:;"><img src="../../public/images/mm.png"></a><p>微信</p></li>
+                <li class="QQ left"><a href="javascript:;"><img src="../../public/images/qq.png"></a><p>QQ</p></li>
+                <li class="sina left "><a href="javascript:;"><img src="../../public/images/sinaweibo.png"></a><p>新浪微博</p></li>
+            </ul>
+            <div class="navbar-form clear-after" style="width: 80%; margin: 0 auto;">
+                <input type="text" class="form-control" name="" placeholder="请输入搜索内容">
+                <button class="btn btn-success" style="padding: 6px 1px;">搜索</button>
+            </div>
+        </div>
+
+        <!-- 点击排行，这个页面要不要做一个猜你喜欢，根据最近的浏览历史 -->
+        <!--<div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-sort-by-attributes-alt mr5"></span><span style="font-weight: bold;font-size: 16px;">点击排行</span>
+            </div>
+            <div class="pd15">
+                <ul class="download-rank">
+                    <li><span class="top1">1</span><a href="javascript:;" title="从你的全世界路过">从你的全世界路过</a></li>
+                    <li><span class="top2">2</span><a href="javascript:;" title="秀秀的铁拳">秀秀的铁拳</a></li>
+                    <li><span class="top3">3</span><a href="javascript:;" title="当你的眼睛眯着笑当你的眼睛眯着笑当你的眼睛眯着笑">当你的眼睛眯着笑当你的眼睛眯着笑当你的眼睛眯着笑</a></li>
+                    <li><span>4</span><a href="javascript:;" title="武汉之旅">武汉之旅</a></li>
+                    <li><span>5</span><a href="javascript:;" title="武汉之旅">武汉之旅</a></li>
+                    <li><span>6</span><a href="javascript:;" title="武汉之旅">武汉之旅</a></li>
+                </ul>
+            </div>
+        </div>-->
+
+        <!-- 最新评论(自动往上翻) -->
+        <div class="mb30 bgOpacity boxShadow borderRadius pdb">
+            <div class="pd10">
+                <span class="glyphicon glyphicon-comment mr5"></span><span style="font-weight: bold;font-size: 16px;">最新评论</span>
+            </div>
+            <div class="pd15 c-new">
+                <ul>
+                    {% for comment in allComment %}
+                    <li class="c-items">
+                        <div class="c-title">《<a href="/article_detail?id=0&category={{ comment.category_title }}&article_Id={{ comment.article_id }}">{{ comment.article_title }}</a>》</div>
+                        <div class="c-content">{{ comment.review_content }}</div>
+                        <div class="c-people">----By {{ comment.uname }}</div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <!-- 旁边部分结束 -->
+    <!-- 返回顶部 -->
+    <div class="toTop"><a href="javascript:;"></a></div>
+    <div id="myData" style="display: none;">
+        {% for article in allArticle %}
+        <div class="article_id">{{ article.article_id }}</div>
+        <div class="uid">{{ userInfo._id }}</div>
+        {% endfor %}
+    </div>
+    <script>
+        (function () {
+            $('#toReview').click(function () {
+                var height = $('#art-con').outerHeight(true) + $('#art-con').offset().top - $('#mynav').height();
+                $(window).scrollTop(height);
+            });
+            if( $('.msg') ) {
+                var height = $('#art-con').outerHeight(true) + $('#art-con').offset().top - $('#mynav').height();
+                if (height < $(window).height()) {
+                    $('.wow').addClass('fadeInDown').show();
+                }
+                $(window).scroll(function () {
+                    var scrollTop = $(window).scrollTop();
+                    if (scrollTop >= height - $(window).height() + $('#mynav').height()) {
+                        $('.wow').addClass('fadeInDown').show();
+                    }
+                    if(scrollTop >= 45){
+                        //这里fixed会有问题，因为fixed相对于body，并不是父级元素
+                        //$('aside .mb30').css('position','fixed');
+                    }
+                });
+                for( var i = 0 ; i < $('#comments .msg').length; i++ ) {
+                    var msg_id = 'cmt' + $('#comments .msg')[i].getAttribute('id');
+                    $('#comments .msg')[i].setAttribute('id',msg_id);
+                }
+            }
+
+            var user_i;
+            $.each($('.msgname span.LevelName'),function (index, value) {
+                user_i = value.innerHTML;
+                if( user_i === "  管理员" ){
+                    $(this).addClass('aulevel1');
+                }
+            });
+            
+        })();
+
+        //限制评论字数
+        $("#txaArticle").keyup(function(){
+            var len = $(this).val().length;
+            if(len >= 139){
+                $(this).val($(this).val().substring(0,139));
+            }
+            var num = 140 - len;
+            $("#word").text(num);
+        });
+
+        //提交评论的数据
+        function VerifyMessage() {
+            if( $('#register').length > 0 ) {
+                alert('请先登录');
+                setTimeout(function () {
+                    $("#loginMask").fadeIn();
+                    $("#loginBox").fadeIn();
+                    $("#loginBox").animate({
+                        top:"0px"
+                    },1000);
+                },200);
+                return false;
+            }else {
+                if( $('#txaArticle').val().length === 0 ){
+                    $('#frmSumbit .msg_danger').fadeIn();
+                    setTimeout(function () {
+                        $('#frmSumbit .msg_danger').fadeOut();
+                    },2000);
+                    return false;
+                }else {
+                    //开始提交表单，获取文章id，评论内容，用户id
+                    var article_id = $('#myData .article_id').html();  //地址栏的article_id
+                    var review_content = $('#txaArticle').val();
+                    var uid = $('#myData .uid').html();
+
+                    var data = {
+                        article_id : article_id,
+                        review_content : review_content,
+                        user_id : uid
+                    };
+                    $.post("/insert",data,function (result) {
+                        if( result.code === 1 ){
+                            //说明成功插入数据，接下来需要更新数据库
+                            //update();
+                            //提交成功清空数据
+                            $('#txaArticle').val('');
+                            location.reload();
+                            var height = $('#art-con').outerHeight(true) + $('#art-con').offset().top - $('#mynav').height();
+                            $(window).scrollTop(height);
+                        }else {
+                            alert('网络连接失败，请稍候重试');
+                        }
+                    });
+                }
+            }
+        }
+        function VerifyMessage1(obj) {
+            if( $('#register').length > 0 ) {
+                alert('请先登录');
+                setTimeout(function () {
+                    $("#loginMask").fadeIn();
+                    $("#loginBox").fadeIn();
+                    $("#loginBox").animate({
+                        top:"0px"
+                    },1000);
+                },200);
+                return false;
+            }else {
+                if( $('#txaArticle1').val().length === 0 ){
+                    var msg = $(obj).closest('.comt-box').find('.msg_danger');
+                    msg.fadeIn();
+                    setTimeout(function () {
+                        msg.fadeOut();
+                    },2000);
+                    return false;
+                }else {
+                    alert('暂不支持回复');
+                }
+            }
+        }
+
+        //点击回复，出现回复框
+        function RevertComment(obj,commentId) {
+            if( $(obj).html() === '回复' ){
+                //修复可以同时打开多个回复框的bug
+                $('.msg').find('.cmt-display').hide();
+                $('.msg').find('.comment-reply-link').html('回复');
+                $(obj).closest('.msg').find('.cmt-display').slideDown();
+                $(obj).html('取消回复');
+            }else {
+                $(obj).closest('.msg').find('.cmt-display').slideUp();
+                $(obj).html('回复');
+            }
+
+            //限制回复框的字数
+            $(obj).closest('.msg').find('.comt-area').keyup(function(){
+                var len = $(this).val().length;
+                if(len >= 139){
+                    $(this).val($(this).val().substring(0,139));
+                }
+                var num = 140 - len;
+                $(obj).closest('.msg').find(".word1").text(num);
+            });
+        }
+
+        //数据库读出pre代码，背景显示问题
+        if(  $('article').find('pre').length > 0  ){
+            $('article').find('pre').css('background','transparent');
+        }
+        $('#art-con span').css('background','transparent');
+
+    </script>
+</div>
+<!-- 内容区结束 -->
+{% endblock %}

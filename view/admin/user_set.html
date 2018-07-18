@@ -1,0 +1,108 @@
+{% extends 'layout.html' %}
+{% block main %}
+
+<div class="content">
+    <h1 class="myh">更改密码</h1>
+    <div class="set_box">
+        <div id="set_form">
+            <div>
+                <ul>
+                    <li>
+                        <span>旧密码：</span>
+                        <p><input type="password" name="opwd" class="opwd"></p>
+                    </li>
+                    <li>
+                        <span>新密码：</span>
+                        <p><input type="password" name="npwd" class="npwd" onblur="showpwd(this,'npwd')">
+                        <div id="npwd">密码必须是首字母开头的6~18位字母数字下划线组合！</div>
+                        </p>
+                    </li>
+                    <li>
+                        <span>重复密码：</span>
+                        <p><input type="password" name="rpwd" class="rpwd" onblur="showrpwd()">
+                        <div id="warning">两次输入的密码不一致，请重新输入！</div>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+            <div id="msg2"></div>
+            <div class="commit_btn"><button id="btn_submit">保存</button></div>
+        </div>
+    </div>
+    <div id="user_i" style="display: none;">{{ userInfo.uname }}</div>
+</div>
+
+<script>
+    function showpwd(obj,divid) {
+        var reg=/^[a-zA-Z]\w{5,17}$/;
+        if(!reg.test(obj.value)){
+            $("#"+divid+"").css("display","block");
+        }else{
+            $("#"+divid+"").css("display","none");
+        }
+    }
+    function showrpwd(){
+        var npwd=$("#set_form").find("[name='npwd']").val();
+        var rpwd=$("#set_form").find("[name='rpwd']").val();
+        if(rpwd!=npwd){
+            //console.log(111);
+            $("#warning").show();
+        }else{
+            $("#warning").hide();
+        }
+    }
+    $(function(){
+        $("#btn_submit").on("click",function () {
+            var opwd=$("#set_form").find("[name='opwd']").val();
+            var npwd=$("#set_form").find("[name='npwd']").val();
+            var rpwd=$("#set_form").find("[name='rpwd']").val();
+            var msg2=$("#msg2");
+            var uname=$("#user_i").html();
+
+            //新密码不能和原始密码相同
+            if(npwd!=opwd && rpwd==npwd){
+                $.ajax({
+                    type:"post",
+                    url:"/admin/userSet",
+                    data:{
+                        opwd:opwd,
+                        npwd:npwd,
+                        uname:uname
+                    },
+                    dataType:"json",
+                    success:function (data) {
+                        if(data.code!==2){
+                            msg2.show();
+                            msg2.html(data.msg);
+                            msg2.css("color","#f00");
+                            setTimeout(function(){
+                                msg2.hide();
+                            },3000);
+                        }else{
+                            //密码修改成功
+                            msg2.show();
+                            msg2.html(data.msg);
+                            msg2.css("color","blue");
+                            setTimeout(function(){
+                                msg2.hide();
+                                location.href="/";
+                            },2000);
+                        }
+                    }
+                });
+            }else if(npwd==opwd && (npwd!="" || npwd!=null)){
+                msg2.show();
+                msg2.html("新密码不能和原始密码相同！");
+                msg2.css("color","#f00");
+                setTimeout(function(){
+                    msg2.hide();
+                },3000);
+            }else if(rpwd!=npwd){
+                $("#warning").show();
+            }
+        });
+    })
+
+</script>
+
+{%endblock%}
