@@ -1,0 +1,57 @@
+article .person-info {
+    padding: 10px;
+}
+article .person-info .person-img {
+    float: left;
+    width: 40%;
+    overflow: hidden;
+    border-radius: 10px;
+}
+article .person-img img{
+    width: 100%;
+    height: 100%;
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -ms-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+}
+article .person-img:hover img{
+    -webkit-transform: scale(1.1, 1.1);
+    -moz-transform: scale(1.1, 1.1);
+    -ms-transform: scale(1.1, 1.1);
+    -o-transform: scale(1.1, 1.1);
+    transform: scale(1.1, 1.1);
+    -webkit-transition: all 1s;
+    -moz-transition: all 1s;
+    -ms-transition: all 1s;
+    -o-transition: all 1s;
+    transition: all 1s;
+}
+article .person-info .person-msg {
+    width: 56%;
+    float: right;
+}
+article .person-info .person-msg li {
+    line-height: 26px;
+    letter-spacing: 1px;
+}
+
+
+article .person-comprehend {
+    margin-top: 28px;
+    float: left;
+    text-indent: 28px;
+}
+article .person-info .person-comprehend img {
+    float: right;
+    margin-top: -30px;
+}
+article .person-info .person-comprehend p {
+    margin-bottom: 12px;
+    line-height: 25px;
+    color: #666666;
+    letter-spacing: 1px;
+    font-size: 15px;
+}
+
